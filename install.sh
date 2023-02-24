@@ -29,13 +29,13 @@ fi
 for dir in "${TERMUX_HOME}/storage/shared/Termux-YTD" "${TERMUX_HOME}/.config/youtube-dl"; do
 	printf '\e[0;36mCreating directory "%s"\e[0m\n' "${dir}"
 	sleep 2
-	install -d "${TERMUX_HOME}/${dir}"
+	install -d "${dir}"
 done
 
 # Install the url opener.
 printf '\e[0;36mInstalling Termux-YTD\e[0m\n'
 sleep 2
-install -Dm755 "termux-url-opener" "${TERMUX_HOME}/bin"
+install -Dm755 "termux-url-opener" "${TERMUX_HOME}/bin/termux-url-opener"
 
 printf '\n\e[0;36mInstallation Complete!\e[0m\n'
 printf '\e[0;36mJust open the video you want to download in youtube, click share, select termux, choose a quality, and the download will start\e[0m\n'
