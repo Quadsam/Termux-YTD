@@ -15,7 +15,7 @@ printf '\e[01;36mRetriving package lists and installing dependencies\e[0m\n'
 sleep 2
 apt-get update -q
 apt-get upgrade -y -q
-apt-get install python3{,-pip} -y -q
+apt-get install python{3,-pip} -y -q
 pip install youtube-dl
 
 # If the storage directory does not exist run termux-setup-storage.
