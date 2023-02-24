@@ -45,6 +45,9 @@ if [[ -z ${option} ]]; then
 	fail '\e[031m Please choose a option!\e[0m\n'
 	exit 1
 else
+	# Create the destination directory if it doesnt already exist
+	[[ -d ${HOME}/.config/youtube-dl ]] || mkdir -p "${HOME}/.config/youtube-dl"
+
 	# Parse the user input
 	case "${option}" in
 		1) printf '%s 140\n' "${command}";;                    # Music MP3
