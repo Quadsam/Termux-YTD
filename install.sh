@@ -7,51 +7,35 @@
 
 TERMUX_HOME="/data/data/com.termux/files/home"
 
-# Make sure we are up to date.
-printf '\e[01;36mRetriving package lists and updating\e[0m\n'
-apt-get update && apt-get upgrade -y
+# Causes the script to quit if an error occurs
+set -e
+
+# Make sure we are up to date, and have python, pip and youtube-dl installed.
+printf '\e[01;36mRetriving package lists and installing dependencies\e[0m\n'
+sleep 2
+apt-get update -q
+apt-get upgrade -y -q
+apt-get install python3{,-pip} -y -q
+pip install youtube-dl
 
 # If the storage directory does not exist run termux-setup-storage.
-if [ ! -d "${TERMUX_HOME}/storage" ]; then
-  printf '\e[0;36mRequesting acces to storage\e[0m\n'
+if [[ ! -d ${TERMUX_HOME}/storage ]]; then
+  printf '\e[0;36mRequesting access to storage\e[0m\n'
   sleep 2
   termux-setup-storage
 fi
 
-# Install python if it is not already.
-if ! apt-cache pkgnames | grep "^python$" &>/dev/null; then
-  printf '\e[0;36mInstalling python\e[0m\n'
-  sleep 2
-  apt-get install python -y
-fi
-
-# Install the youtube-dl python module if it isnt installed.
-if ! pip list | grep "^youtube-dl" &>/dev/null; then
-  printf '\e[0;36mInstalling youtube-dl\e[0m\n'
-  sleep 2
-  pip install youtube-dl
-fi
-
-# Create the output directory if needed.
-if [ ! -d "${TERMUX_HOME}/storage/shared/Youtube" ]; then
-  printf '\e[0;36mCreating output directory at "~/storage/shared/Youtube"\e[0m\n'
-  sleep 2
-  mkdir "${TERMUX_HOME}/storage/shared/Youtube"
-fi
-
-# Create the directory for our config file.
-if [ ! -d "${TERMUX_HOME}/.config/youtube-dl" ]; then
-  printf '\e[0;36mCreating config directory for youtube-dl\e[0m\n'
-  sleep 2
-  mkdir -p "${TERMUX_HOME}/.config/youtube-dl"
-fi
+# Create needed directories.
+for dir in "${TERMUX_HOME}/storage/shared/Termux-YTD" "${TERMUX_HOME}/.config/youtube-dl"; do
+	printf '\e[0;36mCreating directory "%s"\e[0m\n' "${dir}"
+	sleep 2
+	install -d "${TERMUX_HOME}/${dir}"
+done
 
 # Install the url opener.
 printf '\e[0;36mInstalling Termux-YTD\e[0m\n'
-mkdir -p "${TERMUX_HOME}/bin"
-mv termux-url-opener "${TERMUX_HOME}/bin"
-chmod +x "${TERMUX_HOME}/bin/termux-url-opener"
 sleep 2
+install -Dm755 "termux-url-opener" "${TERMUX_HOME}/bin"
 
 printf '\n\e[0;36mInstallation Complete!\e[0m\n'
 printf '\e[0;36mJust open the video you want to download in youtube, click share, select termux, choose a quality, and the download will start\e[0m\n'
